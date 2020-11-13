@@ -1,32 +1,49 @@
-
+ import React, {useState, useEffect} from 'react'
+ import axios from 'axios'
 
 function Deck() {
-    const URL = https://deckofcardsapi.com/api/deck/<<deck_id>>/draw/?count=2;
+    const URL_BASE_API = `https://deckofcardsapi.com/api/`
+    const [deck, setDeck] = useState(null);
     const[cards, setCards] = useState([]);
+    console.log(cards);
 
-    function handleClick(evt) {
+
+
+
+    useEffect(function getNewDeckWhenMounted() {
+        async function fetchDeck() {
+          const deckResult = await axios.get(`${URL_BASE_API}deck/new/`);
+          setDeck(deckResult.data);
+          console.log(deckResult.data);
+
+        //   setIsLoading(false);
+        }
+        fetchDeck();
+      }, []);
+    
+
+    async function handleClick(evt) {
         evt.preventDefault()
-        const cardResult = await axios.get(URL);
-        setCards(cards => [...cards, cardResult]);
-    }
 
+        const cardResult = await axios.get(`${URL_BASE_API}/deck/${deck.deck_id}/draw/?count=1`);
+        setCards(cards => [...cards, cardResult.data.cards[0].image]);
+        
+    }
 
     
     
     return <div>
-             {cards.map(c => {
-             <div>{c}</div>;
-             }
+    
             <button onClick = {handleClick}> New Card!</button>
-            <button>New Deck!</button> 
+            
            </div>
 }
 
-// useEffect(function newCardWhenRendered() {
-    //     async function newCard() {
-    //       const cardResult = await axios.get(URL);
-    //       setProfile(userResult.data);
-    //       setIsLoading(false);
-    //     }
-    //     fetchUser();
-    //   }, [ ]);
+export default Deck
+
+{/* {cards.map(c => {
+             <div>{c}</div>;
+             } */}
+
+{/* <button>New Deck!</button>  */}
+
